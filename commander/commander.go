@@ -98,7 +98,12 @@ func (in *Commander) PublishUsingDefinition(channel channel.ID, cmdName string, 
 
 func (in *Commander) sendPacket(octets []byte) {
 	log.Printf("Sending %X", octets)
-	header := []byte{byte(len(octets))}
-	in.conn.Write(header)
+	octetCount := len(octets)
+	lengthOctets, lengthErr := serializer.SmallLengthToOctets(uint16(octetCount))
+	if lengthErr != nil {
+		log.Fatalf("Couldn't write length")
+		return
+	}
+	in.conn.Write(lengthOctets)
 	in.conn.Write(octets)
 }
