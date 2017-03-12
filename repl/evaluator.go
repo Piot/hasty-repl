@@ -64,7 +64,7 @@ func (in Evaluator) parsePublishUsingDefinition(args []string) error {
 	channel := parseChannel(args[0])
 	cmd := args[1]
 	data := strings.Replace(args[2], ",", "\n", -1)
-	data = strings.Replace(data, ":", ": ", -1)
+	data = strings.Replace(data, ";", ": ", -1)
 	log.Printf("Converted: '%s'", data)
 	return in.commander.PublishUsingDefinition(channel, cmd, data)
 }
