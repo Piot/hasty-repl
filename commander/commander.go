@@ -35,7 +35,8 @@ func checkForPacket(stream *packet.Stream, data []byte) (packet.Packet, error) {
 }
 
 func (in *Commander) receiveConn() {
-	stream := packet.NewPacketStream()
+	connectionIDAlwaysOne := packet.NewConnectionID(1)
+	stream := packet.NewPacketStream(connectionIDAlwaysOne)
 	packetHandler := replpackethandler.Handler{}
 
 	for {

@@ -25,6 +25,14 @@ func (in *Handler) HandleSubscribeStream(cmd commands.SubscribeStream) {
 	log.Printf("repl:%s", cmd)
 }
 
+func (in *Handler) HandlePing(cmd commands.Ping) {
+	log.Printf("repl:%s", cmd)
+}
+
+func (in *Handler) HandlePong(cmd commands.Pong) {
+	log.Printf("repl:%s", cmd)
+}
+
 func (in *Handler) HandleUnsubscribeStream(cmd commands.UnsubscribeStream) {
 	log.Printf("repl:%s", cmd)
 
