@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"encoding/hex"
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/piot/hasty-babel/definition"
@@ -91,6 +92,18 @@ func (in *Commander) PublishUsingDefinition(channel channel.ID, cmdName string, 
 	log.Printf("Sending '%s' to %s", data, cmd)
 
 	octets, toOctetsErr := serializers.StringToOctets(in.protocolDefinition, *cmd, data)
+	if toOctetsErr != nil {
+		return toOctetsErr
+	}
+	return in.PublishStream(channel, octets)
+}
+
+func (in *Commander) PublishUsingValueFile(channel channel.ID, path string) error {
+	fileContents, readErr := ioutil.ReadFile(path)
+	if readErr != nil {
+		return readErr
+	}
+	octets, toOctetsErr := serializers.ValueStringToOctets(in.protocolDefinition, string(fileContents))
 	if toOctetsErr != nil {
 		return toOctetsErr
 	}

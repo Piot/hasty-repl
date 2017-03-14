@@ -1,5 +1,6 @@
 hasty-repl
 *.pem
 *.hpd
+*.hpv
 start
 

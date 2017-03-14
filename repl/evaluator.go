@@ -69,6 +69,12 @@ func (in Evaluator) parsePublishUsingDefinition(args []string) error {
 	return in.commander.PublishUsingDefinition(channel, cmd, data)
 }
 
+func (in Evaluator) parsePublishUsingValueFile(args []string) error {
+	channel := parseChannel(args[0])
+	filePath := args[1]
+	return in.commander.PublishUsingValueFile(channel, filePath)
+}
+
 func (in Evaluator) Eval(input string) error {
 	fmt.Printf("You wanted to say '%s'\n", input)
 	input = strings.TrimSpace(input)
@@ -86,11 +92,13 @@ func (in Evaluator) Eval(input string) error {
 	case "crs":
 		in.parseCreateStream(args)
 	case "lddef":
-		in.parseLoadDefinition(args)
+		return in.parseLoadDefinition(args)
 	case "pubs":
-		in.parsePublishStream(args)
+		return in.parsePublishStream(args)
 	case "pub":
-		in.parsePublishUsingDefinition(args)
+		return in.parsePublishUsingDefinition(args)
+	case "pubf":
+		return in.parsePublishUsingValueFile(args)
 
 	}
 	return nil
