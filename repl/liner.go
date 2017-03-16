@@ -3,8 +3,12 @@ package repl
 import (
 	"fmt"
 	"io"
+	"log"
+	"os"
+	"path/filepath"
 	"strings"
 
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/peterh/liner"
 )
 
@@ -31,7 +35,9 @@ func (in *Line) promptString() string {
 func NewLine() *Line {
 	rl := liner.NewLiner()
 	rl.SetCtrlCAborts(true)
-	return &Line{State: rl}
+	l := &Line{State: rl}
+	l.ReadHistory()
+	return l
 }
 
 func (in *Line) Prompt() (string, error) {
@@ -66,6 +72,46 @@ func (in *Line) Prompt() (string, error) {
 func (in *Line) Accepted() {
 	in.State.AppendHistory(in.buffer)
 	in.buffer = ""
+}
+
+func historyPath() (string, error) {
+	home, homeErr := homedir.Dir()
+	if homeErr != nil {
+		return "", homeErr
+	}
+	saveDir := filepath.Join(home, ".hasty-repl/")
+	os.MkdirAll(saveDir, 0777)
+	savePath := filepath.Join(saveDir, "history")
+	return savePath, nil
+}
+
+func (in *Line) SaveHistory() error {
+	savePath, saveErr := historyPath()
+	if saveErr != nil {
+		return saveErr
+	}
+	if f, err := os.Create(savePath); err != nil {
+		log.Print("Error writing history file: ", err)
+		return err
+	} else {
+		in.State.WriteHistory(f)
+		f.Close()
+	}
+	return nil
+}
+
+func (in *Line) ReadHistory() error {
+	savePath, saveErr := historyPath()
+	if saveErr != nil {
+		return saveErr
+	}
+
+	if f, err := os.Open(savePath); err == nil {
+		in.State.ReadHistory(f)
+		f.Close()
+	}
+
+	return nil
 }
 
 func (in *Line) Clear() {

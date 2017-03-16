@@ -49,6 +49,7 @@ func (in *Repl) PromptForever() error {
 	for {
 		err := in.prompt()
 		if err != nil {
+			in.line.SaveHistory()
 			in.close()
 			return err
 		}
