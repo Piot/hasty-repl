@@ -11,6 +11,7 @@ import (
 	"github.com/piot/hasty-babel/serializers"
 	"github.com/piot/hasty-protocol/channel"
 	"github.com/piot/hasty-protocol/packet"
+	"github.com/piot/hasty-protocol/packetdeserializers"
 	"github.com/piot/hasty-protocol/packetserializers"
 	"github.com/piot/hasty-protocol/serializer"
 	"github.com/piot/hasty-repl/handler"
@@ -51,21 +52,21 @@ func (in *Commander) receiveConn() {
 			if packetErr != nil {
 				fmt.Printf("Deserialize error:%s", err)
 			}
-			packetserializers.Deserialize(newPacket, &packetHandler)
+			packetdeserializers.Deserialize(newPacket, &packetHandler)
 		}
 	}
 }
 
 func (in *Commander) SubscribeStream(channel channel.ID, offset uint32) error {
 	log.Printf("Commander subscribe %s offset %d", channel, offset)
-	octets := serializer.SubscribeStreamToOctets(channel, offset)
+	octets := packetserializers.SubscribeStreamToOctets(channel, offset)
 	in.sendPacket(octets)
 	return nil
 }
 
 func (in *Commander) CreateStream(path string) error {
 	log.Printf("Commander create %s", path)
-	octets := serializer.CreateStreamToOctets(path)
+	octets := packetserializers.CreateStreamToOctets(path)
 	in.sendPacket(octets)
 	return nil
 }
@@ -82,7 +83,7 @@ func (in *Commander) LoadDefinition(path string) error {
 }
 
 func (in *Commander) PublishStream(channel channel.ID, chunk []byte) error {
-	octets := serializer.PublishStreamToOctets(channel, chunk)
+	octets := packetserializers.PublishStreamToOctets(channel, chunk)
 	in.sendPacket(octets)
 	return nil
 }
