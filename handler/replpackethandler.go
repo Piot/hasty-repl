@@ -33,6 +33,11 @@ func (in *Handler) HandlePong(cmd commands.Pong) {
 	log.Printf("repl:%s", cmd)
 }
 
+func (in *Handler) HandleLogin(cmd commands.Login) error {
+	log.Printf("repl:%s", cmd)
+	return nil
+}
+
 func (in *Handler) HandleUnsubscribeStream(cmd commands.UnsubscribeStream) {
 	log.Printf("repl:%s", cmd)
 
@@ -46,4 +51,8 @@ func (in *Handler) HandleCreateStream(cmd commands.CreateStream) (channel.ID, er
 
 func (in *Handler) HandleStreamData(cmd commands.StreamData) {
 	log.Printf("repl:%s", cmd)
+}
+
+func (in *Handler) HandleTransportDisconnect() {
+	log.Printf("Handle Transport Disconnect")
 }
