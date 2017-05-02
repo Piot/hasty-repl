@@ -46,6 +46,7 @@ func (in *Commander) receiveConn() {
 		octetsRead, err := in.conn.Read(buf)
 		if err != nil {
 			log.Print(err)
+			return
 		} else {
 			feedBuf := buf[:octetsRead]
 			newPacket, packetErr := checkForPacket(&stream, feedBuf)
