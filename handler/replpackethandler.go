@@ -21,6 +21,11 @@ func (in *Handler) HandlePublishStream(cmd commands.PublishStream) error {
 	return fmt.Errorf("Repl doesn't support publish")
 }
 
+func (in *Handler) HandlePublishStreamUser(cmd commands.PublishStreamUser) error {
+	log.Printf("repl:%s", cmd)
+	return fmt.Errorf("Repl doesn't support publish")
+}
+
 func (in *Handler) HandleSubscribeStream(cmd commands.SubscribeStream) {
 	log.Printf("repl:%s", cmd)
 }
@@ -39,6 +44,11 @@ func (in *Handler) HandleLogin(cmd commands.Login) error {
 }
 
 func (in *Handler) HandleUnsubscribeStream(cmd commands.UnsubscribeStream) {
+	log.Printf("repl:%s", cmd)
+
+}
+
+func (in *Handler) HandleAuthenticated(cmd commands.Authenticated) {
 	log.Printf("repl:%s", cmd)
 
 }

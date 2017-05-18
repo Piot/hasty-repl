@@ -12,9 +12,12 @@ import (
 )
 
 var (
-	verbose = kingpin.Flag("verbose", "Verbose mode.").Short('v').Bool()
-	cacert  = kingpin.Flag("cacert", "A .pem-encoded Certificate Authority for TSL connections. Mostly used for self signed certificates.").String()
-	host    = kingpin.Flag("server", "Hasty Server or Load Balancer").Default("localhost:3333").String()
+	verbose  = kingpin.Flag("verbose", "Verbose mode.").Short('v').Bool()
+	cacert   = kingpin.Flag("cacert", "A .pem-encoded Certificate Authority for TSL connections. Mostly used for self signed certificates.").String()
+	host     = kingpin.Flag("server", "Hasty Server or Load Balancer").Default("localhost:3333").String()
+	username = kingpin.Flag("username", "Username").Required().String()
+	password = kingpin.Flag("password", "password").Required().String()
+	realm    = kingpin.Flag("realm", "Which realm to connect to. E.g. com.example.company.product").Required().String()
 )
 
 func boot() error {
@@ -30,6 +33,8 @@ func boot() error {
 		return replErr
 	}
 
+	commander.Connect(*realm)
+	commander.Login(*username, *password)
 	promptErr := repl.PromptForever()
 	return promptErr
 }

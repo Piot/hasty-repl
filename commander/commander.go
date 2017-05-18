@@ -14,6 +14,7 @@ import (
 	"github.com/piot/hasty-protocol/packetdeserializers"
 	"github.com/piot/hasty-protocol/packetserializers"
 	"github.com/piot/hasty-protocol/serializer"
+	"github.com/piot/hasty-protocol/version"
 	"github.com/piot/hasty-repl/handler"
 )
 
@@ -56,6 +57,21 @@ func (in *Commander) receiveConn() {
 			packetdeserializers.Deserialize(newPacket, &packetHandler)
 		}
 	}
+}
+
+func (in *Commander) Connect(realm string) error {
+	log.Printf("Commander connect realm '%s' ", realm)
+	protocolVersion, _ := version.New(1, 0, 0)
+	octets := packetserializers.ConnectToOctets(protocolVersion, realm)
+	in.sendPacket(octets)
+	return nil
+}
+
+func (in *Commander) Login(username string, password string) error {
+	log.Printf("Commander login username '%s' password '%s'", username, password)
+	octets := packetserializers.LoginToOctets(username, password)
+	in.sendPacket(octets)
+	return nil
 }
 
 func (in *Commander) SubscribeStream(channel channel.ID, offset uint32) error {
