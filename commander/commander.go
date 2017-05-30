@@ -20,8 +20,9 @@ import (
 
 // Commander : todo
 type Commander struct {
-	conn               *tls.Conn
-	protocolDefinition definition.ProtocolDefinition
+	conn                  *tls.Conn
+	protocolDefinition    definition.ProtocolDefinition
+	createStreamRequestID uint64
 }
 
 func NewCommander(conn *tls.Conn) Commander {
@@ -54,7 +55,10 @@ func (in *Commander) receiveConn() {
 			if packetErr != nil {
 				fmt.Printf("Deserialize error:%s", err)
 			}
-			packetdeserializers.Deserialize(newPacket, &packetHandler)
+			deserializeErr := packetdeserializers.Deserialize(newPacket, &packetHandler)
+			if deserializeErr != nil {
+				return
+			}
 		}
 	}
 }
@@ -83,7 +87,8 @@ func (in *Commander) SubscribeStream(channel channel.ID, offset uint32) error {
 
 func (in *Commander) CreateStream(path string) error {
 	log.Printf("Commander create %s", path)
-	octets := packetserializers.CreateStreamToOctets(path)
+	in.createStreamRequestID++
+	octets := packetserializers.CreateStreamToOctets(in.createStreamRequestID, path)
 	in.sendPacket(octets)
 	return nil
 }

@@ -59,6 +59,11 @@ func (in *Handler) HandleCreateStream(cmd commands.CreateStream) (channel.ID, er
 	return channel.ID{}, fmt.Errorf("Repl can't handle create stream")
 }
 
+func (in *Handler) HandleCreateStreamResult(cmd commands.CreateStreamResult) error {
+	log.Printf("repl:%s", cmd)
+	return fmt.Errorf("Repl can't handle create stream")
+}
+
 func (in *Handler) HandleStreamData(cmd commands.StreamData) {
 	log.Printf("repl:%s", cmd)
 }
